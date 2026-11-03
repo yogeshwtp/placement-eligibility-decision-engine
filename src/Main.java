@@ -9,60 +9,77 @@ public class Main {
         int backlogs = scanner.nextInt();
         int graduationYear = scanner.nextInt();
 
+        int skillCount = scanner.nextInt();
+        String[] skills = new String[skillCount];
+
+        for (int i = 0; i < skillCount; i++) {
+            skills[i] = scanner.next();
+        }
+
         Candidate candidate = new Candidate(
             name,
             percentage,
             backlogs,
-            graduationYear
+            graduationYear,
+            skills
         );
 
-        Job job = new Job(
-            "Infosys",
-            "Java Developer",
-            65.0,
-            0,
-            2026
-        );
+        int jobCount = scanner.nextInt();
+        Job[] jobs = new Job[jobCount];
 
-        boolean percentagePass =
-            candidate.getPercentage() >= job.getMinimumPercentage();
+        for (int i = 0; i < jobCount; i++) {
+            String company = scanner.next();
+            String role = scanner.next();
+            double minimumPercentage = scanner.nextDouble();
+            int maximumBacklogs = scanner.nextInt();
+            int requiredGraduationYear = scanner.nextInt();
 
-        boolean backlogPass =
-            candidate.getBacklogs() <= job.getMaximumBacklogs();
+            int requiredSkillCount = scanner.nextInt();
+            String[] requiredSkills = new String[requiredSkillCount];
 
-        boolean yearPass =
-            candidate.getGraduationYear() == job.getRequiredGraduationYear();
+            for (int j = 0; j < requiredSkillCount; j++) {
+                requiredSkills[j] = scanner.next();
+            }
 
-        boolean eligible =
-            percentagePass && backlogPass && yearPass;
+            jobs[i] = new Job(
+                company,
+                role,
+                minimumPercentage,
+                maximumBacklogs,
+                requiredGraduationYear,
+                requiredSkills
+            );
+        }
 
-        System.out.println("==============================");
+        System.out.println();
+        System.out.println("AVAILABLE JOBS");
+
+        for (int i = 0; i < jobs.length; i++) {
+            System.out.println(
+                (i + 1) + ". " +
+                jobs[i].getCompany() +
+                " - " +
+                jobs[i].getRole()
+            );
+        }
+
+        int selectedJobNumber = scanner.nextInt();
+        Job selectedJob = jobs[selectedJobNumber - 1];
+
+        EligibilityChecker checker = new EligibilityChecker();
+
+        System.out.println();
+        System.out.println("================================");
         System.out.println("PLACEMENT ELIGIBILITY RESULT");
-        System.out.println("==============================");
+        System.out.println("================================");
         System.out.println();
 
         System.out.println("Candidate : " + candidate.getName());
-        System.out.println("Company   : " + job.getCompany());
-        System.out.println("Role      : " + job.getRole());
+        System.out.println("Company   : " + selectedJob.getCompany());
+        System.out.println("Role      : " + selectedJob.getRole());
         System.out.println();
 
-        if (percentagePass) {
-            System.out.println("Percentage      : PASS");
-        } else {
-            System.out.println("Percentage      : FAIL");
-        }
-
-        if (backlogPass) {
-            System.out.println("Backlogs        : PASS");
-        } else {
-            System.out.println("Backlogs        : FAIL");
-        }
-
-        if (yearPass) {
-            System.out.println("Graduation Year : PASS");
-        } else {
-            System.out.println("Graduation Year : FAIL");
-        }
+        boolean eligible = checker.evaluate(candidate, selectedJob);
 
         System.out.println();
 
@@ -72,7 +89,7 @@ public class Main {
             System.out.println("Final Result : NOT ELIGIBLE");
         }
 
-        System.out.println("==============================");
+        System.out.println("================================");
 
         scanner.close();
     }
